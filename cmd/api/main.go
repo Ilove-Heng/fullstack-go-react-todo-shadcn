@@ -8,38 +8,22 @@ import (
 	"github.com/Ilove-Heng/fullstack-go-react-todo-shadcn/internal/handler"
 	"github.com/gofiber/fiber/v2"
 	"github.com/gofiber/fiber/v2/middleware/cors"
-	"github.com/joho/godotenv"
 	_ "github.com/lib/pq"
 )
 
-var db *sql.DB
-
 func main() {
-	    // Load .env if not in production
-		if os.Getenv("ENV") != "production" {
-			if err := godotenv.Load(); err != nil {
-				log.Fatal("Error loading .env file:", err)
-			}
-		}
-
-		// Connect to postgres
-		dbURL := os.Getenv("DATABASE_URL")
-		if dbURL == "" {
-			log.Fatal("DATABASE_URL environment variable is not set")
-		}
-
-		var err error
-		db, err = sql.Open("postgres", dbURL);
-
+		db, err := sql.Open("postgres", os.Getenv("DATABASE_URL"))
 		if err != nil {
-			log.Fatal("Error connecting to the database:", err)
+			log.Fatalf("Error opening database: %v", err)
+		}
+		defer db.Close()
+
+		err = db.Ping()
+		if err != nil {
+			log.Fatalf("Error connecting to the database: %v", err)
 		}
 
-		defer db.Close()
-	
-		if err := db.Ping(); err != nil {
-			log.Fatal("Error pinging database:", err)
-		}
+		log.Println("Connected to the database successfully!")
 
 		log.Println("Conntected to postgres...")
 
