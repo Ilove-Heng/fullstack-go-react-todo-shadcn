@@ -11,21 +11,36 @@ import (
 	_ "github.com/lib/pq"
 )
 
+var db *sql.DB
+
 func main() {
-		db, err := sql.Open("postgres", os.Getenv("DATABASE_URL"))
-		if err != nil {
-			log.Fatalf("Error opening database: %v", err)
-		}
-		defer db.Close()
+	    // Load .env if not in production
+		// if os.Getenv("ENV") != "production" {
+		// 	if err := godotenv.Load(); err != nil {
+		// 		log.Fatal("Error loading .env file:", err)
+		// 	}
+		// }
 
-		err = db.Ping()
-		if err != nil {
-			log.Fatalf("Error connecting to the database: %v", err)
-		}
+		// // Connect to postgres
+		// dbURL := os.Getenv("DATABASE_URL")
+		// if dbURL == "" {
+		// 	log.Fatal("DATABASE_URL environment variable is not set")
+		// }
 
-		log.Println("Connected to the database successfully!")
+		// var err error
+		// db, err = sql.Open("postgres", dbURL);
 
-		log.Println("Conntected to postgres...")
+		// if err != nil {
+		// 	log.Fatal("Error connecting to the database:", err)
+		// }
+
+		// defer db.Close()
+	
+		// if err := db.Ping(); err != nil {
+		// 	log.Fatal("Error pinging database:", err)
+		// }
+
+		// log.Println("Conntected to postgres...")
 
 		todoHandler := handler.NewTodoHandler(db) 
 
